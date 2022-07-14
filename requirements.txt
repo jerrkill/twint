@@ -3,7 +3,7 @@ aiodns
 beautifulsoup4
 cchardet
 dataclasses
-elasticsearch
+elasticsearch==7.16.3
 pysocks
 pandas>=0.23.0
 aiohttp_socks
@@ -11,3 +11,4 @@ schedule
 geopy
 fake-useragent
 googletransx
+pymysql
