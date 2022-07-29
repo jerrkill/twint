@@ -230,7 +230,7 @@ class Twint:
                 if self.config.Return:
                     global g_tweets
                     g_tweets.extend(tmptws)
-                    self.config.Tweets.extend(tmptws)
+                    self.config.Tweets[self.config.User_id].extend(tmptws)
 
     async def main(self, callback=None):
 
