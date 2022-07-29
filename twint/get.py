@@ -137,8 +137,8 @@ async def RequestUrl(config, init):
         if config.session is None:
             config.session = aiohttp.ClientSession(connector=_connector, headers=_headers)
     except Exception as e:
-        # config.session = aiohttp.ClientSession(connector=_connector, headers=_headers)
-        print('config.session', str(e))
+         config.session = aiohttp.ClientSession(connector=_connector, headers=_headers)
+        # print('config.session', str(e))
     response = await Request(_url, params=params, connector=_connector, headers=_headers, session=config.session)
 
     if config.Debug:
