@@ -133,18 +133,26 @@ async def RequestUrl(config, init):
         _serialQuery = _url
 
     # print(config.mc.session)
-    # try:
-    #     if config.session is None:
-    #         config.session = aiohttp.ClientSession(connector=_connector, headers=_headers)
-    # except Exception as e:
-    #     # config.session = aiohttp.ClientSession(connector=_connector, headers=_headers)
-    #     print('config.session', str(e))
-    response = await Request(_url, params=params, connector=_connector, headers=_headers)
+    try:
+        if config.session is None:
+            config.session = aiohttp.ClientSession(connector=_connector, headers=_headers)
+    except Exception as e:
+        # config.session = aiohttp.ClientSession(connector=_connector, headers=_headers)
+        print('config.session', str(e))
+    response = await Request(_url, params=params, connector=_connector, headers=_headers, session=config.session)
 
     if config.Debug:
         print(_serialQuery, file=open("twint-request_urls.log", "a", encoding="utf-8"))
 
     return response
+
+
+def get_session(config):
+    _connector = get_connector(config)
+    _headers = [("authorization", config.Bearer_token), ("x-guest-token", config.Guest_token)]
+    print(_headers)
+    session = aiohttp.ClientSession(connector=_connector, headers=_headers)
+    return session
 
 
 def ForceNewTorIdentity(config):

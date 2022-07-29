@@ -16,10 +16,11 @@ class RefreshTokenException(Exception):
 
 
 class Token:
-    def __init__(self, config):
+    def __init__(self, bearer_token):
         self._session = requests.Session()
         self._session.headers.update({'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101 Firefox/78.0'})
-        self.config = config
+        # self.config = config
+        self.bearer_token = bearer_token
         self._retries = 5
         self._timeout = 10
         self.url = 'https://twitter.com'
@@ -54,7 +55,7 @@ class Token:
         else:
             msg = f'{self._retries + 1} requests to {self.url} failed, giving up.'
             logme.fatal(msg)
-            self.config.Guest_token = None
+            # self.config.Guest_token = None
             raise RefreshTokenException(msg)
 
     def refresh(self):
@@ -63,13 +64,14 @@ class Token:
         match = re.search(r'\("gt=(\d+);', res.text)
         if match:
             logme.debug('Found guest token in HTML')
-            self.config.Guest_token = str(match.group(1))
+            # self.config.Guest_token = str(match.group(1))
+            return str(match.group(1))
         else:
             headers = {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101 Firefox/78.0',
                 'authority': 'api.twitter.com',
                 'content-length': '0',
-                'authorization': self.config.Bearer_token,
+                'authorization': self.bearer_token,
                 'x-twitter-client-language': 'en',
                 'x-csrf-token': res.cookies.get("ct0"),
                 'x-twitter-active-user': 'yes',
@@ -89,7 +91,9 @@ class Token:
             match = re.search(r'{"guest_token":"(\d+)"}', res.text)
             if match:
                 logme.debug('Found guest token in JSON')
-                self.config.Guest_token = str(match.group(1))
+                # self.config.Guest_token = str(match.group(1))
+                return str(match.group(1))
             else:
-                self.config.Guest_token = None
+                # self.config.Guest_token = None
                 raise RefreshTokenException('Could not find the Guest token in JSON')
+                return None
